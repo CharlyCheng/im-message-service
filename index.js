@@ -65,7 +65,7 @@ const getQrcodeTicket = async () => {
     "action_name": "QR_STR_SCENE",
     "action_info": {
         "scene": {
-            "scene_id": "test"
+            "scene_id": "test",
         }
     }
   }
@@ -95,18 +95,66 @@ const getQrcodeUrl = async () => {
   return  `data:iamge/png;base64,${Buffer.from(wxRes.data, "binary").toString("base64")}`;
 }
 
-// 微信Token消息验证
-router.get("/api/wx/check_token", async (ctx) => {
+// openId获取用户信息
+const getUserInfo = async ({
+  openId
+}) => {
+  const { access_token } = await getAccessToken();
+  const wxUrl = `https://api.weixin.qq.com/cgi-bin/user/info?access_token=${access_token}&openid=${openId}&lang=zh_CN`;
+  let wxRes = {};
+  try {
+    wxRes = await axios.get(`${wxUrl}`);
+  } catch (err) {
+    console.error('微信===>getUserInfo获取失败')
+  }
+  console.log('wxRes==>getUserInfo', wxRes.data)
+  return  wxRes.data;
+}
+
+// check token信息
+const checkTokenInfoCenter = async (query) => {
   const token = "wx_check_token";
-  const { signature, timestamp, echostr, nonce } = ctx.request.query
+  const { signature, timestamp, echostr, nonce } = query
   const oriArr = [nonce, timestamp, token];
   const oriStr = oriArr.sort().join("");
   let sha1 = crypto.createHash("sha1").update(oriStr).digest("hex");
-  console.log('sha1 !== signature', ctx.request.query)
+  console.log('sha1 !== signature', query)
   if (sha1 !== signature) {
     ctx.body = 'token验证失败';
   } else {
     ctx.body = echostr
+  }
+}
+
+// 初始微信Token
+router.get("/api/wx/check_token", async (ctx) => {
+  const { openid } = ctx.request.query;
+  // openId信息换取用户信息
+  if (openid) {
+    const wxUserInfo = await getUserInfo({
+      openId: openid
+    });
+    console.log('wxUserInfo', wxUserInfo);
+    ctx.body = {
+      code: 0,
+      data: wxUserInfo
+    }
+    return;
+  }
+  // token校验
+  checkTokenInfoCenter(ctx.request.query)
+});
+
+// 获取用户信息
+router.get("/api/wx/get_user_info", async (ctx) => {
+  const { openid } = ctx.request.query;
+  const wxUserInfo = await getUserInfo({
+    openId: openid
+  });
+  console.log('wxUserInfo', wxUserInfo);
+  ctx.body = {
+    code: 0,
+    data: wxUserInfo
   }
 });
 
