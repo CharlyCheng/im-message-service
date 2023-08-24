@@ -1,0 +1,46 @@
+{
+  "containers": [
+    {
+      "name": "im-message-service",
+      "domain": "",
+      "ip": "",
+      "mode": "compose",
+      "containerId": "edcae8b02ee6bce1b26954b26eed8aedf4565be658ca19abe72d04a55c49a4ab"
+    }
+  ],
+  "config": {
+    "im-message-service": {
+      "containerPort": 80,
+      "dockerfilePath": "Dockerfile",
+      "buildDir": "",
+      "minNum": 0,
+      "maxNum": 5,
+      "cpu": 1,
+      "mem": 2,
+      "policyType": "cpu",
+      "policyThreshold": 80,
+      "policyDetails": [
+        {
+          "PolicyType": "cpu",
+          "PolicyThreshold": 80
+        },
+        {
+          "PolicyType": "mem",
+          "PolicyThreshold": 80
+        }
+      ],
+      "envParams": {
+        "MYSQL_USERNAME": "root",
+        "MYSQL_PASSWORD": "M25pTceD",
+        "MYSQL_ADDRESS": "sh-cynosdbmysql-grp-1r6il3p8.sql.tencentcdb.com:22673"
+      },
+      "customLogs": "stdout",
+      "initialDelaySeconds": 2,
+      "dataBaseName": "nodejs_demo",
+      "executeSQLs": [
+        "CREATE DATABASE IF NOT EXISTS nodejs_demo;",
+        "USE nodejs_demo;"
+      ]
+    }
+  }
+}
