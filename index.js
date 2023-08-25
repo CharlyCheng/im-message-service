@@ -65,7 +65,7 @@ const getQrcodeTicket = async () => {
     "action_name": "QR_STR_SCENE",
     "action_info": {
         "scene": {
-            "scene_id": "test",
+            "scene_id": "test", // 在扫码后取出来
         }
     }
   }
@@ -151,11 +151,13 @@ const sendTemplateInfoToUser = async ({
 // 初始微信Token
 router.get("/api/wx/check_token", async (ctx) => {
   const { openid } = ctx.request.query;
+  console.log("/api/wx/check_token",openid)
   // openId信息换取用户信息
   if (openid) {
     const wxUserInfo = await getUserInfo({
       openId: openid
     });
+    console.log("/api/wx/check_token", wxUserInfo)
     // 关注者扫码进来&已关注
     if (wxUserInfo.subscribe === 1 && wxUserInfo.subscribe_scene === 'ADD_SCENE_QR_CODE') {
       // 百应id与
