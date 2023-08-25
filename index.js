@@ -159,20 +159,18 @@ router.get("/api/wx/check_token", async (ctx) => {
     });
     console.log("/api/wx/check_token", wxUserInfo)
     // 关注者扫码进来&已关注
-    if (wxUserInfo.subscribe === 1 && wxUserInfo.subscribe_scene === 'ADD_SCENE_QR_CODE') {
-      // 百应id与
-      const { templateId = "zS9ceyir5U930fdnLQ3mJHwo3kc5q9LbewejfBaOh_A" } = ctx.request.body;
-      const wxRes = await sendTemplateInfoToUser({
-        openId: openid,
-        templateId
-      });
-      console.log('wxUserInfo', wxRes, wxUserInfo);
-      ctx.body = {
-        code: 0,
-        data: wxRes
-      }
+    if (wxUserInfo.subscribe === 1 && wxUserInfo.subscribe_scene === 'ADD_SCENE_QR_CODE') {}
+    // 百应id与
+    const { templateId = "zS9ceyir5U930fdnLQ3mJHwo3kc5q9LbewejfBaOh_A" } = ctx.request.body;
+    const wxRes = await sendTemplateInfoToUser({
+      openId: openid,
+      templateId
+    });
+    console.log('wxUserInfo', wxRes, wxUserInfo);
+    ctx.body = {
+      code: 0,
+      data: wxRes
     }
-  
     return;
   }
   // token校验
