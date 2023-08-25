@@ -112,13 +112,13 @@ const getUserInfo = async ({
 }
 
 // check token信息
-const checkTokenInfoCenter = async (query) => {
+const checkTokenInfoCenter = async (ctx) => {
   const token = "wx_check_token";
-  const { signature, timestamp, echostr, nonce } = query
+  const { signature, timestamp, echostr, nonce } = ctx.request.query
   const oriArr = [nonce, timestamp, token];
   const oriStr = oriArr.sort().join("");
   let sha1 = crypto.createHash("sha1").update(oriStr).digest("hex");
-  console.log('sha1 !== signature', query)
+  console.log('sha1 !== signature', ctx.request.query)
   if (sha1 !== signature) {
     ctx.body = 'token验证失败';
   } else {
@@ -156,7 +156,7 @@ router.get("/api/wx/check_token", async (ctx) => {
     const wxUserInfo = await getUserInfo({
       openId: openid
     });
-    const { templateId = "kzUcMwMPbdKjZZlF0XpSQcKhvRe2OTED26A67nZdTGU" } = ctx.request.body;
+    const { templateId = "zS9ceyir5U930fdnLQ3mJHwo3kc5q9LbewejfBaOh_A" } = ctx.request.body;
     const wxRes = await sendTemplateInfoToUser({
       openId,
       templateId
@@ -169,7 +169,7 @@ router.get("/api/wx/check_token", async (ctx) => {
     return;
   }
   // token校验
-  checkTokenInfoCenter(ctx.request.query)
+  checkTokenInfoCenter(ctx)
 });
 
 // 获取access_token
