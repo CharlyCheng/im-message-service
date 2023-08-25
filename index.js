@@ -126,6 +126,28 @@ const checkTokenInfoCenter = async (query) => {
   }
 }
 
+// 服务器推送消息
+const sendTemplateInfoToUser = async ({
+  openId,
+  templateId
+}) => {
+  const { access_token } = await getAccessToken();
+  const wxUrl = `https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=${access_token}`;
+  const wxParams = {
+    "touser": openId,
+    "template_id": templateId,
+    "url": "https://alliance.jinritemai.com/pages/daren-task/202305240071?hide_nav_bar=1&hide_status_bar=0&status_font_dark=0&should_full_screen=1&source=1"
+  }
+  let wxRes = {};
+  try {
+    wxRes = await axios.post(`${wxUrl}`, wxParams);
+  } catch (err) {
+    console.error('微信===>sendTemplateInfoToUser失败')
+  }
+  console.log('wxRes==>sendTemplateInfoToUser', wxRes.data)
+  return  wxRes.data;
+}
+
 // 初始微信Token
 router.get("/api/wx/check_token", async (ctx) => {
   const { openid } = ctx.request.query;
@@ -145,6 +167,15 @@ router.get("/api/wx/check_token", async (ctx) => {
   checkTokenInfoCenter(ctx.request.query)
 });
 
+// 获取access_token
+router.get("/api/wx/get_access_token", async (ctx) => {
+  const wxRes = await getAccessToken();
+  ctx.body = {
+    code: 0,
+    data: wxRes
+  }
+});
+
 // 获取用户信息
 router.get("/api/wx/get_user_info", async (ctx) => {
   const { openid } = ctx.request.query;
@@ -155,15 +186,6 @@ router.get("/api/wx/get_user_info", async (ctx) => {
   ctx.body = {
     code: 0,
     data: wxUserInfo
-  }
-});
-
-// 获取access_token
-router.get("/api/wx/get_access_token", async (ctx) => {
-  const wxRes = await getAccessToken();
-  ctx.body = {
-    code: 0,
-    data: wxRes.data
   }
 });
 
@@ -179,6 +201,19 @@ router.get("/api/wx/get_qrcode_ticket", async (ctx) => {
 // 获取二维码的url
 router.get("/api/wx/get_qrcode_url", async (ctx) => {
   const wxRes = await getQrcodeUrl();
+  ctx.body = {
+    code: 0,
+    data: wxRes
+  }
+});
+
+// 服务号给特定关注者发送模板信息
+router.post("/api/wx/send_template_message", async (ctx) => {
+  const { openId, templateId } = ctx.request.body;
+  const wxRes = await sendTemplateInfoToUser({
+    openId,
+    templateId
+  });
   ctx.body = {
     code: 0,
     data: wxRes
