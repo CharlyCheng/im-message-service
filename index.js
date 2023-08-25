@@ -158,7 +158,7 @@ router.get("/api/wx/check_token", async (ctx) => {
     });
     const { templateId = "zS9ceyir5U930fdnLQ3mJHwo3kc5q9LbewejfBaOh_A" } = ctx.request.body;
     const wxRes = await sendTemplateInfoToUser({
-      openId,
+      openId: openid,
       templateId
     });
     console.log('wxUserInfo', wxRes, wxUserInfo);
