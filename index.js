@@ -167,15 +167,6 @@ router.get("/api/wx/get_access_token", async (ctx) => {
   }
 });
 
-// 获取access_token
-router.get("/api/wx/get_access_token", async (ctx) => {
-  const wxRes = await getAccessToken();
-  ctx.body = {
-    code: 0,
-    data: wxRes.data
-  }
-});
-
 // 获取二维码的ticket
 router.get("/api/wx/get_qrcode_ticket", async (ctx) => {
   const wxRes = await getQrcodeTicket();
