@@ -149,10 +149,12 @@ const sendTemplateInfoToUser = async ({
 }
 
 // 初始微信Token
-router.get("/api/wx/check_token", async (ctx) => {
-  const { openid } = ctx.request.query;
+router.post("/api/wx/check_token", async (ctx) => {
+  console.log('lailailai==>初始', ctx.request.body)
+  const { openid } = ctx.request.body;
   // openId信息换取用户信息
   if (openid) {
+    console.log('lailailai', ctx.request.body)
     const wxUserInfo = await getUserInfo({
       openId: openid
     });
@@ -171,7 +173,7 @@ router.get("/api/wx/check_token", async (ctx) => {
     }
     return;
   }
-  // token校验
+  // token校验zz
   checkTokenInfoCenter(ctx)
 });
 
