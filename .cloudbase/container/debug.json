@@ -4,7 +4,8 @@
       "name": "im-message-service",
       "domain": "",
       "ip": "",
-      "mode": "compose"
+      "mode": "compose",
+      "containerId": "2dd2993ac321ff3759c5326227419b4c39d2ef0a211e7014939d39ee1a0fbcb7"
     }
   ],
   "config": {

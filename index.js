@@ -151,17 +151,17 @@ const sendTemplateInfoToUser = async ({
 // 初始微信Token
 router.post("/api/wx/check_token", async (ctx) => {
   console.log('lailailai==>初始', ctx.request.body)
-  const { openid } = ctx.request.body;
+  const { openid } = ctx.request.query;
   // openId信息换取用户信息
   if (openid) {
-    console.log('lailailai', ctx.request.body)
+    console.log('lailailai', ctx.request.query)
     const wxUserInfo = await getUserInfo({
       openId: openid
     });
     // 关注者扫码进来&已关注
     if (wxUserInfo.subscribe === 1 && wxUserInfo.subscribe_scene === 'ADD_SCENE_QR_CODE') {}
     // 百应id与
-    const { templateId = "zS9ceyir5U930fdnLQ3mJHwo3kc5q9LbewejfBaOh_A" } = ctx.request.body;
+    const { templateId = "zS9ceyir5U930fdnLQ3mJHwo3kc5q9LbewejfBaOh_A" } = ctx.request.query;
     const wxRes = await sendTemplateInfoToUser({
       openId: openid,
       templateId
