@@ -5,10 +5,11 @@ const bodyParser = require("koa-bodyparser");
 const fs = require("fs");
 const path = require("path");
 const { init: initDB, Counter } = require("./db");
-const axios = require('axios');
+const axios = require('axios').default;
 const qs = require('qs');
 const crypto = require('crypto');
 const xmlParser = require('koa-xml-body');
+const { default: axios } = require('axios');
 
 const router = new Router();
 
@@ -72,7 +73,11 @@ const getQrcodeTicket = async () => {
   }
   let wxRes = {};
   try {
-    wxRes = await axios.post(`${wxUrl}`, wxParams);
+    wxRes = await axios.post(`${wxUrl}`, wxParams, {
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    });
   } catch (err) {
     throw new Error('微信===>getQrcodeTicket获取失败')
   }
