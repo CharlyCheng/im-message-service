@@ -76,6 +76,7 @@ const getQrcodeTicket = async () => {
     };
     let wxRes = {};
     try {
+        console.log('wxParams', wxParams);
         wxRes = await axios.post(`${wxUrl}`, wxParams);
     } catch (err) {
         throw new Error('微信===>getQrcodeTicket获取失败');
@@ -167,10 +168,10 @@ router.post('/api/wx/check_token', async (ctx) => {
     //     'gQE78DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyS3o5Zmh1TXFkakYxUVRPUmhBY1cAAgS3N_xkAwSAOgkA'
     //   ]
     // }
-    console.log('lailailai==>初始', ctx.request.body);
+    console.log('lailailai==>初始', ctx.request.query, ctx.request.body);
     const {
         openid,
-        templateId = 'Fp6h5BR2zBOj7G2dE-FE04kItlEjUIjdp0WkXOyjOwI	',
+        templateId = 'Fp6h5BR2zBOj7G2dE-FE04kItlEjUIjdp0WkXOyjOwI',
     } = ctx.request.query;
     const { xml } = ctx.request.body;
     // openId信息换取用户信息
@@ -181,9 +182,12 @@ router.post('/api/wx/check_token', async (ctx) => {
             (xml.Event || []).includes('subscribe') &&
             (xml.MsgType || []).includes('event')
         ) {
-            const qrCodeData = (
-                lodash.get(xml, 'EventKey.[0]') || 'qrscene_?'
-            ).match(/^qrscene_\?(.*)/)[1];
+            const qrCodeData = lodash.get(
+                (lodash.get(xml, 'EventKey.[0]') || 'qrscene_?').match(
+                    /^qrscene_\?(.*)/
+                ),
+                '[1]'
+            );
             // 百应id与
             const wxRes = await sendTemplateInfoToUser({
                 openId: openid,
