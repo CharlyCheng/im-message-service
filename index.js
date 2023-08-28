@@ -144,6 +144,7 @@ const sendTemplateInfoToUser = async ({ openId, templateId, data }) => {
         data,
         url: 'https://alliance.jinritemai.com/pages/daren-task/202305240071?hide_nav_bar=1&hide_status_bar=0&status_font_dark=0&should_full_screen=1&source=1',
     };
+    console.log('sendTemplateInfoToUser', wxParams);
     let wxRes = {};
     try {
         wxRes = await axios.post(`${wxUrl}`, wxParams);
