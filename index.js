@@ -8,6 +8,7 @@ const { init: initDB, Counter } = require("./db");
 const axios = require('axios');
 const qs = require('qs');
 const crypto = require('crypto');
+const xmlParser = require('koa-xml-body');
 
 const router = new Router();
 
