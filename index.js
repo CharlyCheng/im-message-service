@@ -151,23 +151,32 @@ const sendTemplateInfoToUser = async ({
 
 // 初始微信Token
 router.post("/api/wx/check_token", async (ctx) => {
+  // 未关注订阅事件
+  // xml: {
+  //   ToUserName: [ 'gh_36eea3037457' ],
+  //   FromUserName: [ 'oMFpT6aaMKpphG2f0BlVIyLA5BuA' ],
+  //   CreateTime: [ '1693208173' ],
+  //   MsgType: [ 'event' ],
+  //   Event: [ 'subscribe' ],
+  //   EventKey: [ 'qrscene_' ],
+  //   Ticket: [
+  //     'gQE78DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyS3o5Zmh1TXFkakYxUVRPUmhBY1cAAgS3N_xkAwSAOgkA'
+  //   ]
+  // }
   console.log('lailailai==>初始', ctx.request.body)
-  const { openid } = ctx.request.query;
+  const { openid , templateId = "zS9ceyir5U930fdnLQ3mJHwo3kc5q9LbewejfBaOh_A"} = ctx.request.query;
+  const { xml } = ctx.request.body;
   // openId信息换取用户信息
   if (openid) {
-    console.log('lailailai', ctx.request.query, ctx.body)
-    const wxUserInfo = await getUserInfo({
-      openId: openid
-    });
+    console.log('lailailai xml', xml)
     // 关注者扫码进来&已关注
-    if (wxUserInfo.subscribe === 1 && wxUserInfo.subscribe_scene === 'ADD_SCENE_QR_CODE') {
+    if ((xml.Event || []).includes('subscribe') && (xml.MsgType || []).includes('event')) {
         // 百应id与
-        const { templateId = "zS9ceyir5U930fdnLQ3mJHwo3kc5q9LbewejfBaOh_A" } = ctx.request.query;
         const wxRes = await sendTemplateInfoToUser({
           openId: openid,
           templateId
         });
-        console.log('wxUserInfo', wxRes, wxUserInfo);
+        console.log('wxUserInfo', wxRes);
         ctx.body = {
           code: 0,
           data: wxRes
@@ -177,7 +186,7 @@ router.post("/api/wx/check_token", async (ctx) => {
     return;
   }
   // token校验zz
-  checkTokenInfoCenter(ctx)
+  checkTokenInfoCenter(ctx);
 });
 
 // 获取access_token
