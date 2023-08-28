@@ -188,7 +188,7 @@ router.post('/api/wx/check_token', async (ctx) => {
         ) {
             // subscribe和SCAN的参数
             const qrCodeData = (lodash.get(xml, 'EventKey[0]') || '').replace(
-                /^qrscene_\?/,
+                /^(qrscene_)?\?/,
                 ''
             );
             // 百应id与
