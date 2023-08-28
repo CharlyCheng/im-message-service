@@ -15,9 +15,10 @@
     "axios": "^1.4.0",
     "body-parser": "^1.19.1",
     "koa": "^2.13.4",
-    "koa-bodyparser": "^4.3.0",
+    "koa-bodyparser": "^4.4.1",
     "koa-logger": "^3.2.1",
     "koa-router": "^10.1.1",
+    "koa-xml-body": "^3.0.0",
     "mysql2": "^2.3.3",
     "sequelize": "^6.13.0"
   }
