@@ -65,7 +65,7 @@ const getQrcodeTicket = async () => {
     "action_name": "QR_STR_SCENE",
     "action_info": {
         "scene": {
-            "scene_id": "test",
+            "scene_str": "test",
         }
     }
   }
@@ -154,7 +154,7 @@ router.post("/api/wx/check_token", async (ctx) => {
   const { openid } = ctx.request.query;
   // openId信息换取用户信息
   if (openid) {
-    console.log('lailailai', ctx.request.query)
+    console.log('lailailai', ctx.request.query, ctx.body)
     const wxUserInfo = await getUserInfo({
       openId: openid
     });
@@ -172,6 +172,7 @@ router.post("/api/wx/check_token", async (ctx) => {
           data: wxRes
         }
     }
+    ctx.body = '';
     return;
   }
   // token校验zz
@@ -250,6 +251,7 @@ router.get("/api/wx_openid", async (ctx) => {
 const app = new Koa();
 app
   .use(logger())
+  .use(xmlParser())
   .use(bodyParser())
   .use(router.routes())
   .use(router.allowedMethods());
