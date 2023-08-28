@@ -183,7 +183,7 @@ router.post('/api/wx/check_token', async (ctx) => {
             (xml.MsgType || []).includes('event')
         ) {
             const qrCodeData = lodash.get(
-                (lodash.get(xml, 'EventKey.[0]') || 'qrscene_?').match(
+                (lodash.get(xml, 'EventKey[0]') || 'qrscene_?').match(
                     /^qrscene_\?(.*)/
                 ),
                 '[1]'
