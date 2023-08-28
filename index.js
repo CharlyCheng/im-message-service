@@ -9,6 +9,7 @@ const axios = require('axios').default;
 const qs = require('qs');
 const crypto = require('crypto');
 const xmlParser = require('koa-xml-body');
+const lodash = require('lodash');
 
 const router = new Router();
 
@@ -58,9 +59,9 @@ const getAccessToken = async () => {
 
 // 获取qrcodeTicket
 const getQrcodeTicket = async () => {
-    // 回调拿到的 EventKey: [ 'qrscene_'+ xxx ],
+    // 回调拿到的 EventKey: [ 'qrscene_?'+ xxx ],
     const parseScene = (qrsceneString) => {
-        return qs.stringify(qrsceneString || {});
+        return '?' + qs.stringify(qrsceneString || {});
     };
     const { access_token } = await getAccessToken();
     const wxUrl = `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=${access_token}`;
@@ -133,12 +134,13 @@ const checkTokenInfoCenter = async (ctx) => {
 };
 
 // 服务器推送消息
-const sendTemplateInfoToUser = async ({ openId, templateId }) => {
+const sendTemplateInfoToUser = async ({ openId, templateId, data }) => {
     const { access_token } = await getAccessToken();
     const wxUrl = `https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=${access_token}`;
     const wxParams = {
         touser: openId,
         template_id: templateId,
+        data,
         url: 'https://alliance.jinritemai.com/pages/daren-task/202305240071?hide_nav_bar=1&hide_status_bar=0&status_font_dark=0&should_full_screen=1&source=1',
     };
     let wxRes = {};
@@ -160,7 +162,7 @@ router.post('/api/wx/check_token', async (ctx) => {
     //   CreateTime: [ '1693208173' ],
     //   MsgType: [ 'event' ],
     //   Event: [ 'subscribe' ],
-    //   EventKey: [ 'qrscene_^xxx' ],
+    //   EventKey: [ 'qrscene_?a=1' ],
     //   Ticket: [
     //     'gQE78DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyS3o5Zmh1TXFkakYxUVRPUmhBY1cAAgS3N_xkAwSAOgkA'
     //   ]
@@ -168,7 +170,7 @@ router.post('/api/wx/check_token', async (ctx) => {
     console.log('lailailai==>初始', ctx.request.body);
     const {
         openid,
-        templateId = 'zS9ceyir5U930fdnLQ3mJHwo3kc5q9LbewejfBaOh_A',
+        templateId = 'Fp6h5BR2zBOj7G2dE-FE04kItlEjUIjdp0WkXOyjOwI	',
     } = ctx.request.query;
     const { xml } = ctx.request.body;
     // openId信息换取用户信息
@@ -179,10 +181,16 @@ router.post('/api/wx/check_token', async (ctx) => {
             (xml.Event || []).includes('subscribe') &&
             (xml.MsgType || []).includes('event')
         ) {
+            const qrCodeData = (
+                lodash.get(xml, 'EventKey.[0]') || 'qrscene_?'
+            ).match(/^qrscene_\?(.*)/)[1];
             // 百应id与
             const wxRes = await sendTemplateInfoToUser({
                 openId: openid,
                 templateId,
+                data: {
+                    qrCodeData,
+                },
             });
             console.log('wxUserInfo', wxRes);
             ctx.body = {
