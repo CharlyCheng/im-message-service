@@ -161,15 +161,15 @@ const sendTemplateInfoToUser = async ({ openId, templateId, data }) => {
 router.post('/api/wx/check_token', async (ctx) => {
     // 未关注订阅事件
     // xml: {
-    //   ToUserName: [ 'gh_36eea3037457' ],
-    //   FromUserName: [ 'oMFpT6aaMKpphG2f0BlVIyLA5BuA' ],
-    //   CreateTime: [ '1693208173' ],
     //   MsgType: [ 'event' ],
     //   Event: [ 'subscribe' ],
-    //   EventKey: [ 'qrscene_?a=1' ],
-    //   Ticket: [
-    //     'gQE78DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyS3o5Zmh1TXFkakYxUVRPUmhBY1cAAgS3N_xkAwSAOgkA'
-    //   ]
+    //   EventKey: [ 'qrscene_?myid=123' ],
+    // }
+    // 已关注扫描
+    // xml: {
+    //   MsgType: [ 'event' ],
+    //   Event: [ 'SCAN' ],
+    //   EventKey: [ '?myid=123' ],
     // }
     console.log('lailailai==>初始', ctx.request.query, ctx.request.body);
     const {
@@ -182,14 +182,14 @@ router.post('/api/wx/check_token', async (ctx) => {
         console.log('lailailai xml', xml);
         // 关注者扫码进来&已关注
         if (
-            (xml.Event || []).includes('subscribe') &&
+            ((xml.Event || []).includes('subscribe') ||
+                (xml.Event || []).includes('SCAN')) &&
             (xml.MsgType || []).includes('event')
         ) {
-            const qrCodeData = lodash.get(
-                (lodash.get(xml, 'EventKey[0]') || 'qrscene_?').match(
-                    /^qrscene_\?(.*)/
-                ),
-                '[1]'
+            // subscribe和SCAN的参数
+            const qrCodeData = (lodash.get(xml, 'EventKey[0]') || '').replace(
+                /^qrscene_\?/,
+                ''
             );
             // 百应id与
             const wxRes = await sendTemplateInfoToUser({
