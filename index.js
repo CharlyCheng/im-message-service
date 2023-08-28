@@ -9,7 +9,6 @@ const axios = require('axios').default;
 const qs = require('qs');
 const crypto = require('crypto');
 const xmlParser = require('koa-xml-body');
-const { default: axios } = require('axios');
 
 const router = new Router();
 
