@@ -59,6 +59,11 @@ const getAccessToken = async () => {
 
 // 获取qrcodeTicket
 const getQrcodeTicket = async () => {
+
+  // 回调拿到的 EventKey: [ 'qrscene_^'+ xxx ],
+  const parseScene = (qrsceneString)=>{
+    return '^' + qrsceneString;
+  }
   const { access_token } = await getAccessToken();
   const wxUrl = `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=${access_token}`;
   const wxParams = {
@@ -66,17 +71,13 @@ const getQrcodeTicket = async () => {
     "action_name": "QR_STR_SCENE",
     "action_info": {
         "scene": {
-            "scene_str": "test",
+            "scene_str": parseScene('myid'),
         }
     }
   }
   let wxRes = {};
   try {
-    wxRes = await axios.post(`${wxUrl}`, wxParams, {
-      headers:{
-        'Content-Type': 'application/json'
-      }
-    });
+    wxRes = await axios.post(`${wxUrl}`, wxParams);
   } catch (err) {
     throw new Error('微信===>getQrcodeTicket获取失败')
   }
