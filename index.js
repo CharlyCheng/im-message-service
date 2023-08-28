@@ -172,7 +172,7 @@ router.post('/api/wx/check_token', async (ctx) => {
     console.log('lailailai==>初始', ctx.request.query, ctx.request.body);
     const {
         openid,
-        templateId = 'Fp6h5BR2zBOj7G2dE-FE04kItlEjUIjdp0WkXOyjOwI',
+        templateId = 'rBBUrl_mnRiO2cXEpyiCmVN9OcU1ZEjHWLFimi_u5HI',
     } = ctx.request.query;
     const { xml } = ctx.request.body;
     // openId信息换取用户信息
@@ -193,8 +193,9 @@ router.post('/api/wx/check_token', async (ctx) => {
             const wxRes = await sendTemplateInfoToUser({
                 openId: openid,
                 templateId,
+                // data需要匹配前缀
                 data: {
-                    qrCodeData,
+                    thing_qrCodeData: qrCodeData,
                 },
             });
             console.log('wxUserInfo', wxRes);
