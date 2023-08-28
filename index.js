@@ -70,6 +70,7 @@ const getQrcodeTicket = async () => {
         action_name: 'QR_STR_SCENE',
         action_info: {
             scene: {
+                // 这里获取绑定百应数据的id后再生成
                 scene_str: parseScene({ myid: '123' }),
             },
         },
@@ -141,6 +142,7 @@ const sendTemplateInfoToUser = async ({ openId, templateId, data }) => {
     const wxParams = {
         touser: openId,
         template_id: templateId,
+        topcolor: '#FF0000',
         data,
         url: 'https://alliance.jinritemai.com/pages/daren-task/202305240071?hide_nav_bar=1&hide_status_bar=0&status_font_dark=0&should_full_screen=1&source=1',
     };
@@ -172,7 +174,7 @@ router.post('/api/wx/check_token', async (ctx) => {
     console.log('lailailai==>初始', ctx.request.query, ctx.request.body);
     const {
         openid,
-        templateId = 'rBBUrl_mnRiO2cXEpyiCmVN9OcU1ZEjHWLFimi_u5HI',
+        templateId = 'WvYXx4GU1uvvqRCl9H5F6pDgRIGIsXMpEboGfjsXOaU',
     } = ctx.request.query;
     const { xml } = ctx.request.body;
     // openId信息换取用户信息
@@ -195,7 +197,7 @@ router.post('/api/wx/check_token', async (ctx) => {
                 templateId,
                 // data需要匹配前缀
                 data: {
-                    thing_qrCodeData: qrCodeData,
+                    qrCodeData: { value: qrCodeData },
                 },
             });
             console.log('wxUserInfo', wxRes);
