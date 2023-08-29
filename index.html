@@ -221,6 +221,8 @@
         >微信授权获取的code: <span class="wx-auth-code" /></a>
       <a class="btn btn-success btn-lg count-button" style="background: #07c160; border: 0"
         >微信授权获取的access_code: <span class="wx-access-token" /></a>
+      <a class="btn btn-success btn-lg count-button" style="background: #07c160; border: 0"
+        >微信授权获取的openid: <span class="wx-access-openid" /></a>
       <div class="card" style="width: 320px; margin-bottom: 48px;">
         <div class="card-body">
           <img class="qrcode middle"
@@ -285,7 +287,8 @@
     }).done(function (res) {
       console.log('res', res)
       if (res && res.data !== undefined) {
-        $(".wx-access-token").text(res.data);
+        $(".wx-access-token").text(res.data.access_token);
+        $(".wx-access-openid").text(res.data.openid);
       }
     });
   }
