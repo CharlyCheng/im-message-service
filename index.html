@@ -279,12 +279,13 @@
       searchObj[itemArr[0]] = itemArr[1]
     })
     const code = searchObj['code'];
+    $(".wx-auth-code").text(code);
     $.ajax(`/api/wx/get_page_access_token?code=${code}`, {
       method: "get"
     }).done(function (res) {
       console.log('res', res)
       if (res && res.data !== undefined) {
-        $(".qrcode").attr("src", res.data);
+        $(".wx-access-token").text(res.data);
       }
     });
   }
