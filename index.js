@@ -13,7 +13,8 @@ const xmlParser = require('koa-xml-body');
 const router = new Router();
 
 const homePage = fs.readFileSync(path.join(__dirname, "index.html"), "utf-8");
-
+const appId = 'wx9decb412f9fec6e1';
+const appSecret = '99867c73064dc2b494ddd0bd02ba0e21';
 
 // 首页
 router.get("/", async (ctx) => {
@@ -148,6 +149,36 @@ const sendTemplateInfoToUser = async ({
   console.log('wxRes==>sendTemplateInfoToUser', wxRes.data)
   return  wxRes.data;
 }
+
+// 服通过code换取网页授权access_token
+const getWxPageAccessToken = async ({
+  code
+}) => {
+  const wxUrl = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${appId}&secret=${appSecret}&code=${code}&grant_type=authorization_code`;
+  let wxRes = {};
+  try {
+    wxRes = await axios.get(`${wxUrl}`);
+  } catch (err) {
+    console.error('微信===>getWxPageAccessToken失败')
+  }
+  console.log('wxRes==>getWxPageAccessToken', wxRes.data)
+  return  wxRes.data;
+}
+
+
+// 网页静默授权code获取acess_token
+// 获取access_token
+router.get("/api/wx/get_page_access_token", async (ctx) => {
+  const { code } = ctx.request.query;
+  console.log('code', code)
+  const wxRes = await getWxPageAccessToken({
+    code
+  });
+  ctx.body = {
+    code: 0,
+    data: wxRes
+  }
+});
 
 // 初始微信Token
 router.post("/api/wx/check_token", async (ctx) => {

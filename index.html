@@ -217,6 +217,10 @@
       </span>
       <a class="btn btn-success btn-lg count-button" style="background: #07c160; border: 0"
         onclick="set('inc')">计数+1</a>
+      <a class="btn btn-success btn-lg count-button" style="background: #07c160; border: 0"
+        >微信授权获取的code: <span class="wx-auth-code" /></a>
+      <a class="btn btn-success btn-lg count-button" style="background: #07c160; border: 0"
+        >微信授权获取的access_code: <span class="wx-access-token" /></a>
       <div class="card" style="width: 320px; margin-bottom: 48px;">
         <div class="card-body">
           <img class="qrcode middle"
@@ -241,6 +245,7 @@
       }
     });
     getQrCodeUrl()
+    getWxAccessToken()
   }
   function set(action) {
     $.ajax("/api/count", {
@@ -265,6 +270,27 @@
         $(".qrcode").attr("src", res.data);
       }
     });
+  }
+  function getWxAccessToken() {
+    const searchQuery = window.location.search.replace('?', '').split('&');
+    const searchObj = {};
+    searchQuery.forEach(function(item) {
+      const itemArr = item.split('=');
+      searchObj[itemArr[0]] = itemArr[1]
+    })
+    const code = searchObj['code'];
+    $.ajax(`/api/wx/get_page_access_token?code=${code}`, {
+      method: "get"
+    }).done(function (res) {
+      console.log('res', res)
+      if (res && res.data !== undefined) {
+        $(".qrcode").attr("src", res.data);
+      }
+    });
+  }
+  function goToWxAuthUrl() {
+    const wxAuthUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9decb412f9fec6e1&redirect_uri=https%3A%2F%2Fkoa-21f1-67166-4-1320365190.sh.run.tcloudbase.com%2&response_type=code&scope=snsapi_base&state=123456789#wechat_redirect'
+    window.location.href = wxAuthUrl;
   }
 </script>
 
