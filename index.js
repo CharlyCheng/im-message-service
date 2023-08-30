@@ -146,7 +146,8 @@ const sendTemplateInfoToUser = async ({ openId, templateId, data }) => {
         template_id: templateId,
         topcolor: '#FF0000',
         data,
-        url: 'https://alliance.jinritemai.com/pages/daren-task/202305240071?hide_nav_bar=1&hide_status_bar=0&status_font_dark=0&should_full_screen=1&source=1',
+        // 静默授权url
+        url: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9decb412f9fec6e1&redirect_uri=https%3A%2F%2Fkoa-21f1-67166-4-1320365190.sh.run.tcloudbase.com%2&response_type=code&scope=snsapi_base&state=123456789#wechat_redirect',
     };
     console.log('sendTemplateInfoToUser', wxParams);
     let wxRes = {};
